@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+httpx
+html2image
+pyppeteer
+jinja2
