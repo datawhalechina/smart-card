@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="MoneyPrinterTurbo" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="MoneyPrinterTurbo" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="smartcard" project-jdk-type="Python SDK" />
 </project>
