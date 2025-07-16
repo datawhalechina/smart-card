@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI
 import uvicorn
+from app.router import get_main_router
 
 # 根据环境变量加载配置
 env = os.getenv("ENV", "dev")
@@ -9,21 +10,17 @@ if env == "prod":
 else:
     from config_dev import settings
 
+# 创建FastAPI应用
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.PROJECT_VERSION,
     debug=settings.DEBUG
 )
 
-@app.get("/")
-async def root():
-    return {
-        "message": "Hello World",
-        "environment": env,
-        "debug_mode": settings.DEBUG,
-        "port": settings.PORT
-    }
+# 挂载主路由
+app.include_router(get_main_router())
 
+# 启动应用
 def run_server():
     uvicorn.run(
         "main:app",
