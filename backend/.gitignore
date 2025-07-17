@@ -1,0 +1,36 @@
+# 添加过滤idea文件夹
+.idea/
+
+# FastAPI项目常见忽略规则
+# 虚拟环境
+venv/
+env/
+.venv/
+
+# Python缓存和编译文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 日志文件
+*.log
+logs/
+
+# 环境变量配置（敏感信息）
+.env
+.venv
+
+# 数据库文件
+*.db
+db.sqlite3
+
+# 测试报告和覆盖率文件
+htmlcov/
+.coverage
+.coverage.*
+
+# 打包相关
+dist/
+build/
+*.egg-info/

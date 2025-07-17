@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .admin.requirement import router as generate_files_router
+from app.public.requirement import router as generate_files_router
 
 
 # 主路由配置
