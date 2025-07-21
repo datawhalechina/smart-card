@@ -2,8 +2,10 @@ import os
 import logging
 from openai import OpenAI
 from dotenv import load_dotenv
-from prompt_config import SYSTEM_PROMPT_WEB_DESIGNER, USER_PROMPT_WEB_DESIGNER, SYSTEM_PROMPT_SUMMARIZE_2MD
+from config.prompt_config import SYSTEM_PROMPT_WEB_DESIGNER, USER_PROMPT_WEB_DESIGNER
+from config.config import settings
 import re
+# from app.config import settings
 
 # Load environment variables from a .env file if present
 load_dotenv()
@@ -32,9 +34,9 @@ def call_ark_llm(prompt: str, sys_prompt: str = SYSTEM_PROMPT_WEB_DESIGNER, mode
         ValueError: If the ARK_API_KEY environment variable is not set.
         Exception: If the API call fails.
     """
-    api_key = os.environ.get("ARK_API_KEY")
+    api_key = settings.ARK_API_KEY
     # Use the provided base_url or default to the one in the example
-    base_url = os.environ.get("ARK_BASE_URL", "https://ark.cn-beijing.volces.com/api/v3")
+    base_url = settings.ARK_BASE_URL
 
     if not api_key:
         logger.error("ARK_API_KEY environment variable not found.")

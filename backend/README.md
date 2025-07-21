@@ -53,7 +53,10 @@ backend/
 
 1. 安装依赖:
 ```bash
+ conda activate smartcard
+ 
 pip install -r requirements.txt
+
 ```
 
 2. 运行服务器(默认使用8080端口):
@@ -73,3 +76,5 @@ http://127.0.0.1:8080/docs
 - 端口号在config_dev.py和config_prod.py中配置
 - 开发环境默认端口: 8080
 - 生产环境默认端口: 8080
+
+4. 请求体和返回体

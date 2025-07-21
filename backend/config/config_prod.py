@@ -8,4 +8,5 @@ class Settings:
     DEBUG: bool = False
     PORT: int = 8080  # 生产环境端口
 
-settings = Settings()
+ARK_API_KEY: str = ""
+ARK_BASE_URL: str = ""
