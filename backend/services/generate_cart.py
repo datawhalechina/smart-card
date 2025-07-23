@@ -8,16 +8,16 @@ from fastapi import HTTPException
 
 from integration.llm_prompt import call_ark_llm, extract_html_from_response
 from utils.generation_models import GenerationRequest, GenerationResponseData, GenerationMode
+from config.config import settings
 
 logger = logging.getLogger(__name__)
 
-OUTPUT_DIR = "generated_htmls"
 USER_PROMPT_WEB_DESIGNER = """"
 <!-- 请在这里添加您的用户提示 -->
 """
 
 async def generate_cart(payload: GenerationRequest) -> GenerationResponseData:
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     file_id = str(uuid.uuid4())
     llm_raw_response = ""
     html_path = ""
@@ -30,14 +30,14 @@ async def generate_cart(payload: GenerationRequest) -> GenerationResponseData:
 
         combined_prompt = USER_PROMPT_WEB_DESIGNER + payload.prompt
 
-        prompt_path = os.path.join(OUTPUT_DIR, f"{file_id}_prompt.txt")
+        prompt_path = os.path.join(settings.OUTPUT_DIR, f"{file_id}_prompt.txt")
         with open(prompt_path, "w", encoding="utf-8") as f:
             f.write(payload.prompt)
 
         try:
             logger.info(f"使用模型 '{payload.model or 'default'}' 调用LLM")
 
-            model_to_use = payload.model or "deepseek-v3-250324"
+            model_to_use = payload.model or settings.ARK_BASE_MODEL
             temperature_to_use = payload.temperature or 0.7
 
             llm_raw_response = await asyncio.to_thread(
@@ -49,7 +49,7 @@ async def generate_cart(payload: GenerationRequest) -> GenerationResponseData:
 
             html_content = extract_html_from_response(llm_raw_response)
 
-            html_path = os.path.join(OUTPUT_DIR, f"{file_id}.html")
+            html_path = os.path.join(settings.OUTPUT_DIR, f"{file_id}.html")
             with open(html_path, "w", encoding="utf-8") as f:
                 f.write(html_content)
             logger.info(f"HTML内容已保存到: {html_path}")
@@ -69,7 +69,7 @@ async def generate_cart(payload: GenerationRequest) -> GenerationResponseData:
         if not payload.html_input:
             raise HTTPException(status_code=400, detail="PASTE模式需要提供HTML输入")
         logger.info(f"处理PASTE模式 - file_id: {file_id}")
-        html_path = os.path.join(OUTPUT_DIR, f"{file_id}.html")
+        html_path = os.path.join(settings.OUTPUT_DIR, f"{file_id}.html")
         with open(html_path, "w", encoding="utf-8") as f:
             f.write(payload.html_input)
         logger.info(f"HTML文件已直接保存: {html_path}")

@@ -9,6 +9,7 @@ env/
 
 # Python缓存和编译文件
 __pycache__/
+backend/__pycache__/
 *.pyc
 *.pyo
 *.pyd
@@ -29,6 +30,7 @@ db.sqlite3
 htmlcov/
 .coverage
 .coverage.*
+output/
 
 # 打包相关
 dist/

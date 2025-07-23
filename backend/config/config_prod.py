@@ -1,12 +1,20 @@
-class Settings:
-    PROJECT_NAME: str = "Smart Card API (Production)"
-    PROJECT_VERSION: str = "1.0.0"
+PROJECT_NAME: str = "Smart Card BackEnd (Development)"
+PROJECT_VERSION: str = "1.0.0"
 
-    # 生产环境数据库配置
-    DATABASE_URL: str = "postgresql://user:password@localhost:5432/prod_db"
-    SECRET_KEY: str = "prod-secret-key"  # 实际使用时应替换为强密钥
-    DEBUG: bool = False
-    PORT: int = 8080  # 生产环境端口
+# 开发环境配置
+DATABASE_URL: str = "postgresql://user:password@localhost:5432/prod_db"
+SECRET_KEY: str = "dev-secret-key"
+DEBUG: bool = True
+PORT: int = 8000  # 开发环境端口
 
+# LLM Configuration (New - Ark Platform via OpenAI client)
 ARK_API_KEY: str = ""
-ARK_BASE_URL: str = ""
+ARK_BASE_URL: str = "https://chat.intern-ai.org.cn/api/v1/"
+ARK_BASE_MODEL: str = "internlm3-latest"
+
+JINA_API_URL: str = "https://r.jina.ai/"
+JINA_API_KEY = ""
+
+OUTPUT_DIR: str = "output"
+STATIC_DIR: str = "static"
+TEMPLATES_DIR: str = "templates"
