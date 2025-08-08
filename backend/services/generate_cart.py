@@ -7,7 +7,7 @@ import asyncio
 from fastapi import HTTPException
 
 from integration.llm_prompt import call_ark_llm, extract_html_from_response
-from utils.generation_models import GenerationRequest, GenerationResponseData, GenerationMode
+from entity.generation_models import GenerationRequest, GenerationResponseData, GenerationMode
 from config.config import settings
 
 logger = logging.getLogger(__name__)

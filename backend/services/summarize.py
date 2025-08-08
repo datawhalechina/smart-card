@@ -1,15 +1,10 @@
 # backend/services/generateCart.py
 
-import os
-import uuid
 import logging
-import asyncio
-from fastapi import HTTPException
 import requests
 
 from config.prompt_config import SYSTEM_PROMPT_SUMMARIZE_2MD
-from integration.llm_prompt import call_ark_llm, extract_html_from_response
-from utils.generation_models import GenerationRequest, GenerationResponseData, GenerationMode, SummarizeRequest, \
+from entity.generation_models import SummarizeRequest, \
     SummarizeResponse, WebFetchResponse, WebFetchRequest
 from utils.llm_caller import generate_content_with_llm
 from config.config import settings

@@ -1,6 +1,7 @@
 # common/response.py
 from typing import Generic, TypeVar, Optional, Any, List, Dict
 from pydantic import BaseModel
+from utils.constant import HttpStatusConstant
 
 # 定义泛型类型，支持任意数据结构
 T = TypeVar("T")
@@ -27,6 +28,20 @@ def error(
     """错误响应：统一包含data字段（可为空）"""
     return standard_response(code=code, msg=msg, data=data)
 
+def unauthorized(
+    msg: str = "未授权",
+    data: Optional[Any] = None
+) -> standard_response:
+    """
+            未认证响应方法
+
+            :param msg: 可选，自定义未认证响应信息
+            :param data: 可选，未认证响应结果中属性为data的值
+            :return: 未认证响应结果
+            """
+    return standard_response(code=HttpStatusConstant.UNAUTHORIZED, msg=msg, data=data)
+
+
 # 常用错误快捷函数
 def not_found(msg: str = "资源不存在") -> standard_response:
     return error(code=404, msg=msg)
@@ -51,4 +66,6 @@ def setup_exception_handlers(app):
         return JSONResponse(
             content=error(msg=str(exc)).dict()
         )
+
+
 

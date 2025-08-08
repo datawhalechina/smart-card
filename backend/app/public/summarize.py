@@ -1,11 +1,9 @@
-from typing import Optional, List
-
 from fastapi import APIRouter
 import logging
 
 from services.summarize import intelligent_summary, fetch_web
-from utils.standard_response import standard_response
-from utils.generation_models import SummarizeRequest, SummarizeResponse, WebFetchResponse, WebFetchRequest
+from entity.standard_response import standard_response
+from entity.generation_models import SummarizeRequest, SummarizeResponse, WebFetchResponse, WebFetchRequest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

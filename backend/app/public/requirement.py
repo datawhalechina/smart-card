@@ -1,10 +1,8 @@
-from typing import Optional, List
-
 from fastapi import APIRouter
 import logging
-from utils.standard_response import standard_response
+from entity.standard_response import standard_response
 from services.generate_cart import generate_cart
-from utils.generation_models import GenerationResponseData, GenerationRequest
+from entity.generation_models import GenerationResponseData, GenerationRequest
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
