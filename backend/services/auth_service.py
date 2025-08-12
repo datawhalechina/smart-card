@@ -48,6 +48,7 @@ class LoginService:
                     userName=user_register.username,
                     nickName=user_register.username,
                     password=PwdUtil.get_password_hash(user_register.password),
+                    email=user_register.email,
                 )
                 result = await UserService.add_user_services(query_db, add_user)
                 return result

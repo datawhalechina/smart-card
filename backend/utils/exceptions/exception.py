@@ -33,9 +33,10 @@ class ServiceException(Exception):
     自定义服务异常ServiceException
     """
 
-    def __init__(self, data: str = None, message: str = None):
+    def __init__(self, data: str = None, message: str = None, code: str = None):
         self.data = data
         self.message = message
+        self.code = code
 
 
 class ServiceWarning(Exception):

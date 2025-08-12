@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 class Meta(BaseModel):
-    timestamp: int
+    timestamp: str
     nonce: str
     signature: str
     traceId: str

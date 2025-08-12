@@ -202,6 +202,7 @@ class ResponseUtil:
     def error(
         cls,
         msg: str = '接口异常',
+        code: int = HttpStatusConstant.ERROR,
         data: Optional[Any] = None,
         rows: Optional[Any] = None,
         dict_content: Optional[Dict] = None,
@@ -223,7 +224,8 @@ class ResponseUtil:
         :param background: 可选，响应返回后执行的后台任务
         :return: 错误响应结果
         """
-        result = {'code': HttpStatusConstant.ERROR, 'msg': msg}
+
+        result = {'code': code, 'msg': msg}
 
         if data is not None:
             result['data'] = data

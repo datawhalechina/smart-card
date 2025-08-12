@@ -143,3 +143,57 @@ def verify_signature(header: dict, data: dict, secret_key: str) -> bool:
 ---
 
 如需接口 SDK 示例或调试工具，请参考项目中的 `docs/sdk/` 或联系架构组。
+
+
+## 接口请求示例
+### 注册接口
+请求路径：
+请求入参：
+```
+curl -X 'POST' \
+  'http://localhost:8000/admin/v1/auth/register' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "meta": {
+    "timestamp": 1723037946,
+    "nonce": "abcdef123456",
+    "signature": "a1b2c3d4e5f6g7h8i9j0",
+    "traceId": "req-7890"
+  },
+  "paging": {
+    "page": 1,
+    "pageSize": 10
+  },
+  "data": {
+    "username": "testuser1",
+    "password": "user123",
+    "confirmPassword": "user123",
+    "email": "testuser1@sohu.com",
+    "code": "1234",
+    "uuid": "123456789"
+  }
+}' ```
+
+请求成功出参：
+```{
+  "code": 200,
+  "msg": "新增成功",
+  "data": {
+    "is_success": true,
+    "message": "新增成功",
+    "result": null
+  },
+  "success": true,
+  "time": "2025-08-09T13:37:24.951186"
+}``` 
+
+请求失败：
+```
+{
+  "code": 409,
+  "msg": "新增用户testuser1失败，登录账号已存在",
+  "success": false,
+  "time": "2025-08-09T13:40:22.302610"
+}
+```

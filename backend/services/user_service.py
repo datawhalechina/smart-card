@@ -4,7 +4,7 @@ from dal.user_dal import UserDal
 from entity.vo.auth_vo import AddUserModel
 from entity.vo.common_vo import CrudResponseModel
 from entity.vo.user_vo import UserModel, UserRoleModel
-from utils.constant import CommonConstant
+from utils.constant import CommonConstant, HttpStatusConstant
 from utils.exceptions.exception import ServiceException
 
 
@@ -20,11 +20,14 @@ class UserService:
         """
         add_user = UserModel(**page_object.model_dump(by_alias=True))
         if not await cls.check_user_name_unique_services(query_db, page_object):
-            raise ServiceException(message=f'新增用户{page_object.user_name}失败，登录账号已存在')
+            raise ServiceException(message=f'新增用户{page_object.user_name}失败，登录账号已存在',
+                                   code=HttpStatusConstant.CONFLICT)
         elif page_object.phonenumber and not await cls.check_phonenumber_unique_services(query_db, page_object):
-            raise ServiceException(message=f'新增用户{page_object.user_name}失败，手机号码已存在')
+            raise ServiceException(message=f'新增用户{page_object.user_name}失败，手机号码已存在',
+                                   code=HttpStatusConstant.CONFLICT)
         elif page_object.email and not await cls.check_email_unique_services(query_db, page_object):
-            raise ServiceException(message=f'新增用户{page_object.user_name}失败，邮箱账号已存在')
+            raise ServiceException(message=f'新增用户{page_object.user_name}失败，邮箱账号已存在',
+                                   code=HttpStatusConstant.CONFLICT)
         else:
             try:
                 add_result = await UserDal.add_user_dao(query_db, add_user)

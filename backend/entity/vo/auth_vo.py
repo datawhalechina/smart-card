@@ -31,7 +31,6 @@ class AddUserModel(UserModel):
     """
     新增用户模型
     """
-
     role_ids: Optional[List] = Field(default=[], description='角色ID信息')
     post_ids: Optional[List] = Field(default=[], description='岗位ID信息')
     type: Optional[str] = Field(default=None, description='操作类型')
