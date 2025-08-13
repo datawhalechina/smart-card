@@ -3,6 +3,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
 from typing import List, Optional, Union
 
+from entity.vo.common_vo import CrudResponseModel
 from entity.vo.user_vo import UserModel
 from utils.exceptions.exception import ModelValidatorException
 
@@ -34,3 +35,11 @@ class AddUserModel(UserModel):
     role_ids: Optional[List] = Field(default=[], description='角色ID信息')
     post_ids: Optional[List] = Field(default=[], description='岗位ID信息')
     type: Optional[str] = Field(default=None, description='操作类型')
+
+
+class RegisterResponseModel(BaseModel):
+    data: CrudResponseModel
+
+
+class LoginResponseModel(BaseModel):
+    data: CrudResponseModel

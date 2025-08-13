@@ -56,3 +56,15 @@ class LoginService:
                 raise ServiceException(message='注册程序已关闭，禁止注册')
         else:
             raise ServiceException(message='两次输入的密码不一致')
+
+    @classmethod
+    async def login_user_services(cls, request, query_db, user_login):
+
+        # 登录check
+
+        # 登录用户名密码比对
+        # 登录成功，发放Token，返回登录成功信息，登录表中写入登录时间
+        # 登录失败，返回失败信息
+
+
+        pass

@@ -1,8 +1,7 @@
 import logging
 
 from config.get_db import get_db
-from entity.vo.auth_vo import UserRegister
-from entity.vo.common_vo import  RegisterResponseModel
+from entity.vo.auth_vo import UserRegister, RegisterResponseModel, LoginResponseModel
 from fastapi import APIRouter, Depends, Request
 
 from services.auth_service import LoginService
@@ -22,6 +21,16 @@ async def register_user(request: Request, user_data: RequestUtil, query_db: Asyn
 
     user_register = UserRegister.model_validate(user_data.data.dict())
     user_register_result = await LoginService.register_user_services(request, query_db, user_register)
+    logger.info(user_register_result.message)
+
+    return ResponseUtil.success(data=user_register_result, msg=user_register_result.message)
+
+
+@router.post('/login', response_model = LoginResponseModel)
+async def register_user(request: Request, user_data: RequestUtil, query_db: AsyncSession = Depends(get_db)):
+
+    user_login = UserRegister.model_validate(user_data.data.dict())
+    user_register_result = await LoginService.login_user_services(request, query_db, user_login)
     logger.info(user_register_result.message)
 
     return ResponseUtil.success(data=user_register_result, msg=user_register_result.message)

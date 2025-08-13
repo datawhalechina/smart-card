@@ -12,5 +12,3 @@ class CrudResponseModel(BaseModel):
     message: str = Field(description='响应信息')
     result: Optional[Any] = Field(default=None, description='响应结果')
 
-class RegisterResponseModel(BaseModel):
-    data: CrudResponseModel
