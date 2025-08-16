@@ -87,3 +87,18 @@ class UserService:
         if user and user.user_id != user_id:
             return CommonConstant.NOT_UNIQUE
         return CommonConstant.UNIQUE
+
+
+    @classmethod
+    async def check_login_user_services(cls, query_db: AsyncSession, page_object: UserModel):
+        """
+        校验用户名是否唯一service
+
+        :param query_db: orm对象
+        :param page_object: 用户对象
+        :return: 校验结果
+        """
+        user = await UserDal.get_user_by_info(query_db, UserModel(userName=page_object.user_name))
+        if user and user.password != page_object.password:
+            return CommonConstant.LOGIN_FAILURE_FLAG
+        return CommonConstant.LOGIN_SUCCESS_FLAG

@@ -27,7 +27,6 @@ class UserRegister(BaseModel):
             raise ModelValidatorException(message='密码不能包含非法字符：< > " \' \\ |')
 
 
-
 class AddUserModel(UserModel):
     """
     新增用户模型
@@ -39,6 +38,23 @@ class AddUserModel(UserModel):
 
 class RegisterResponseModel(BaseModel):
     data: CrudResponseModel
+
+
+class UserLogin(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel)
+
+    username: str = Field(description='用户名称')
+    password: str = Field(description='用户密码')
+    email: str = Field(description='用户邮箱')
+
+    @model_validator(mode='after')
+    def check_password(self) -> 'UserLogin':
+        pattern = r"""^[^<>"'|\\]+$"""
+        if self.password is None or re.match(pattern, self.password):
+            return self
+        else:
+            raise ModelValidatorException(message='密码不能包含非法字符：< > " \' \\ |')
+
 
 
 class LoginResponseModel(BaseModel):

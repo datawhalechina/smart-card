@@ -72,5 +72,6 @@ class CommonConstant:
     DEPT_DISABLE = '1'
     UNIQUE = True
     NOT_UNIQUE = False
-
+    LOGIN_SUCCESS_FLAG = True
+    LOGIN_FAILURE_FLAG = False
 

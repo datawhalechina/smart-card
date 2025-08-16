@@ -1,5 +1,6 @@
-from typing import Optional
+from typing import Optional, Generic, TypeVar, Any
 from pydantic import BaseModel
+from pydantic.generics import GenericModel
 
 class Meta(BaseModel):
     timestamp: str
@@ -11,15 +12,11 @@ class Paging(BaseModel):
     page: Optional[int] = 1
     pageSize: Optional[int] = 10
 
-class Data(BaseModel):
-    username: str
-    password: str
-    confirmPassword: str
-    email: str
-    code: str
-    uuid: str
 
-class RequestUtil(BaseModel):
+# 定义泛型类型变量
+T = TypeVar('T')
+
+class RequestUtil(GenericModel, Generic[T]):
     meta: Meta
     paging: Optional[Paging] = None
-    data: Data
+    data: T

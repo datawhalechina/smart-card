@@ -58,12 +58,16 @@ class LoginService:
             raise ServiceException(message='两次输入的密码不一致')
 
     @classmethod
-    async def login_user_services(cls, request, query_db, user_login):
+    async def login_user_services(cls, query_db, user_login):
 
         # 登录check
-
         # 登录用户名密码比对
+        check_login_user_services = await UserService.check_login_user_services(query_db, user_login)
         # 登录成功，发放Token，返回登录成功信息，登录表中写入登录时间
+        if not check_login_user_services:
+            raise ServiceException(message='登录失败')
+        else:
+            return check_login_user_services
         # 登录失败，返回失败信息
 
 
