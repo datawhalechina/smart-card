@@ -1,12 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config.config import settings
 from dal.user_dal import UserDal
-from entity.vo.auth_vo import AddUserModel
-from entity.vo.common_vo import CrudResponseModel
+from entity.vo.auth_vo import AddUserModel, UserLogin
+from entity.vo.common_vo import ResponseModel
 from entity.vo.user_vo import UserModel, UserRoleModel
 from utils.constant import CommonConstant, HttpStatusConstant
 from utils.exceptions.exception import ServiceException
-
+from utils.pwd_util import PwdUtil
+from fastapi import  Request
 
 class UserService:
     @classmethod
@@ -19,6 +21,7 @@ class UserService:
         :return: 新增用户校验结果
         """
         add_user = UserModel(**page_object.model_dump(by_alias=True))
+        # add_user = UserModel(**page_object.model_dump())
         if not await cls.check_user_name_unique_services(query_db, page_object):
             raise ServiceException(message=f'新增用户{page_object.user_name}失败，登录账号已存在',
                                    code=HttpStatusConstant.CONFLICT)
@@ -36,7 +39,7 @@ class UserService:
                     for role in page_object.role_ids:
                         await UserDal.add_user_role_dao(query_db, UserRoleModel(userId=user_id, roleId=role))
                 await query_db.commit()
-                return CrudResponseModel(is_success=True, message='新增成功')
+                return ResponseModel(is_success=True, message='新增成功')
             except Exception as e:
                 await query_db.rollback()
                 raise e
@@ -90,7 +93,7 @@ class UserService:
 
 
     @classmethod
-    async def check_login_user_services(cls, query_db: AsyncSession, page_object: UserModel):
+    async def check_login_user_services(cls, query_db: AsyncSession, page_object: UserLogin):
         """
         校验用户名是否唯一service
 
@@ -98,7 +101,11 @@ class UserService:
         :param page_object: 用户对象
         :return: 校验结果
         """
-        user = await UserDal.get_user_by_info(query_db, UserModel(userName=page_object.user_name))
-        if user and user.password != page_object.password:
-            return CommonConstant.LOGIN_FAILURE_FLAG
-        return CommonConstant.LOGIN_SUCCESS_FLAG
+        user = await UserDal.get_user_by_info(query_db, UserModel(userName=page_object.username))
+        # 对密码进行加密，如果前端传过来的是明码这里设定为true
+        password = ''
+        # if not settings.PWD_SEC:
+        #     password = PwdUtil.get_password_hash(page_object.password)
+        verify_pwd_flag = PwdUtil.verify_password(page_object.password,user.password)
+
+        return verify_pwd_flag

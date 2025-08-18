@@ -11,7 +11,6 @@ class RedisUtil:
     """
     Redis相关方法
     """
-
     @classmethod
     async def create_redis_pool(cls) -> aioredis.Redis:
         """

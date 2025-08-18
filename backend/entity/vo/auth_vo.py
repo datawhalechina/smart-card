@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
 from typing import List, Optional, Union
 
-from entity.vo.common_vo import CrudResponseModel
+from entity.vo.common_vo import ResponseModel
 from entity.vo.user_vo import UserModel
 from utils.exceptions.exception import ModelValidatorException
 
@@ -14,7 +14,7 @@ class UserRegister(BaseModel):
     username: str = Field(description='用户名称')
     password: str = Field(description='用户密码')
     email: str = Field(description='用户邮箱')
-    confirm_password: str = Field(description='用户二次确认密码')
+    confirmPassword: str = Field(description='用户二次确认密码')
     code: Optional[str] = Field(default=None, description='验证码')
     uuid: Optional[str] = Field(default=None, description='会话编号')
 
@@ -37,7 +37,7 @@ class AddUserModel(UserModel):
 
 
 class RegisterResponseModel(BaseModel):
-    data: CrudResponseModel
+    data: ResponseModel
 
 
 class UserLogin(BaseModel):
@@ -58,4 +58,4 @@ class UserLogin(BaseModel):
 
 
 class LoginResponseModel(BaseModel):
-    data: CrudResponseModel
+    data: ResponseModel

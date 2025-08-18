@@ -20,7 +20,7 @@ router = APIRouter()
 async def login_user(request: Request, user_login_data: RequestUtil[UserLogin], query_db: AsyncSession = Depends(get_db)):
 
     user_login = UserLogin.model_validate(user_login_data.data.dict())
-    user_login_data_result = await LoginService.login_user_services(query_db, user_login)
+    user_login_data_result = await LoginService.login_user_services(request, query_db, user_login)
 
     return ResponseUtil.success(data=user_login_data_result, msg=user_login_data_result.message)
 

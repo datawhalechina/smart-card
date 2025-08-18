@@ -1,8 +1,13 @@
+import uuid
+from datetime import timedelta
+
 from fastapi import Depends, Form, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config.config import settings
 from config.enums import RedisInitKeyConfig
 from entity.vo.auth_vo import UserRegister, AddUserModel
+from entity.vo.common_vo import  ResponseModel, LoginTokenResult
 from services.user_service import UserService
 from utils.exceptions.exception import ServiceException
 from utils.pwd_util import PwdUtil
@@ -34,7 +39,7 @@ class LoginService:
             == 'true'
             else False
         )
-        if user_register.password == user_register.confirm_password:
+        if user_register.password == user_register.confirmPassword:
             if register_enabled:
                 if captcha_enabled:
                     captcha_value = await request.app.state.redis.get(
@@ -58,7 +63,7 @@ class LoginService:
             raise ServiceException(message='两次输入的密码不一致')
 
     @classmethod
-    async def login_user_services(cls, query_db, user_login):
+    async def login_user_services(cls, request: Request, query_db, user_login):
 
         # 登录check
         # 登录用户名密码比对
@@ -67,8 +72,22 @@ class LoginService:
         if not check_login_user_services:
             raise ServiceException(message='登录失败')
         else:
-            return check_login_user_services
-        # 登录失败，返回失败信息
+            access_token_expires = timedelta(minutes=settings.jwt_expire_minutes)
+            session_id = str(uuid.uuid4())
+            # 生成Token
+            access_token = await PwdUtil.create_access_token(
+                data={
+                    'user_name': user_login.username,
+                    'session_id': session_id,
+                },
+                expires_delta=access_token_expires,
+            )
+            token_data = LoginTokenResult(
+                token=access_token  # 实际应替换为动态生成的token
+            )
 
-
-        pass
+            # 保存到redis
+            await request.app.state.redis.set(
+                f'{user_login.username}:{access_token}', access_token, ex=timedelta(settings.jwt_expire_minutes)
+            )
+            return ResponseModel[LoginTokenResult](is_success=True, message='登录成功,token已发放', result=token_data)
