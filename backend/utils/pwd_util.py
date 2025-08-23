@@ -36,6 +36,24 @@ class PwdUtil:
         return pwd_context.hash(input_password)
 
     @classmethod
+    async def get_token_payload(cls, data: dict, expires_delta: Union[timedelta, None] = None):
+        """
+         获取生成token前的 payload 数据
+
+         :param data: 登录信息
+         :param expires_delta: token有效期
+         :return: 生成token前的字典数据
+         """
+        to_encode = data.copy()
+        if expires_delta:
+            expire = datetime.now(timezone.utc) + expires_delta
+        else:
+            expire = datetime.now(timezone.utc) + timedelta(minutes=30)
+        to_encode.update({'exp': expire})
+        return to_encode
+
+
+    @classmethod
     async def create_access_token(cls, data: dict, expires_delta: Union[timedelta, None] = None):
         """
          根据登录信息创建当前用户token
@@ -58,5 +76,5 @@ class PwdUtil:
             {'alg': settings.jwt_algorithm, 'typ': 'JWT'},  # 添加 header
             to_encode,
             settings.jwt_secret_key
-        )
+        ).decode('utf-8')
         return encoded_jwt

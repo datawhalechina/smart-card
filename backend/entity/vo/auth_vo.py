@@ -57,5 +57,19 @@ class UserLogin(BaseModel):
 
 
 
+class LoginFree(BaseModel):
+    model_config = ConfigDict(alias_generator=to_camel)
+
+    token: str = Field(description='用户登录用TOKEN')
+
+    @model_validator(mode='after')
+    def check_token(self) -> 'LoginFree':
+        if self.token is None:
+            raise ModelValidatorException(message='Token为空')
+        else:
+            return self
+
+
 class LoginResponseModel(BaseModel):
     data: ResponseModel
+

@@ -34,6 +34,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
+
 os.makedirs(settings.OUTPUT_DIR, exist_ok=True)
 app_static_dir = os.path.join(os.path.dirname(__file__), settings.STATIC_DIR)
 os.makedirs(app_static_dir, exist_ok=True)

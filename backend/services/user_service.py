@@ -1,3 +1,4 @@
+from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.config import settings
@@ -8,7 +9,10 @@ from entity.vo.user_vo import UserModel, UserRoleModel
 from utils.constant import CommonConstant, HttpStatusConstant
 from utils.exceptions.exception import ServiceException
 from utils.pwd_util import PwdUtil
-from fastapi import  Request
+from fastapi import Request, Depends
+import jwt
+from utils.log_util import logger
+
 
 class UserService:
     @classmethod
@@ -109,3 +113,34 @@ class UserService:
         verify_pwd_flag = PwdUtil.verify_password(page_object.password,user.password)
 
         return verify_pwd_flag
+
+    @classmethod
+    async def get_current_user(
+            cls,
+            request: Request,  # 请求对象
+            token: str,  # 直接从参数获取token（查询参数/表单等）
+            query_db # 数据库依赖
+    ):
+        """
+        根据token获取当前用户信息
+
+        :param request: Request对象
+        :param token: 用户token
+        :param query_db: orm对象
+        :return: 当前用户信息对象
+        :raise: 令牌异常AuthException
+        """
+        # if token[:6] != 'Bearer':
+        #     logger.warning("用户token不合法")
+        #     raise AuthException(data="", message="用户token不合法")
+        try:
+            payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
+            user_name: str = payload.get('user_name')
+            session_id: str = payload.get('session_id')
+            if not user_name:
+                logger.warning('用户token不合法')
+                raise ServiceException(message='用户token不合法')
+            return user_name
+        except InvalidTokenError:
+            logger.warning('用户token已失效，请重新登录')
+            raise ServiceException(message='用户token已失效，请重新登录')

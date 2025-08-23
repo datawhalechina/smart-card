@@ -1,7 +1,7 @@
 import logging
 
 from config.get_db import get_db
-from entity.vo.auth_vo import UserRegister, RegisterResponseModel, UserLogin, LoginResponseModel
+from entity.vo.auth_vo import UserRegister, RegisterResponseModel, UserLogin, LoginResponseModel, LoginFree
 from fastapi import APIRouter, Depends, Request
 
 from services.auth_service import LoginService
@@ -31,6 +31,19 @@ async def register_user(request: Request, user_data: RequestUtil[UserRegister], 
 
     user_register = UserRegister.model_validate(user_data.data.dict())
     user_register_result = await LoginService.register_user_services(request, query_db, user_register)
+    logger.info(user_register_result.message)
+
+    return ResponseUtil.success(data=user_register_result, msg=user_register_result.message)
+
+
+# 更具需求生成卡片接口
+# 注册接口
+@router.post('/loginFree', response_model = RegisterResponseModel)
+async def login_free(request: Request, user_data: RequestUtil[LoginFree], query_db: AsyncSession = Depends(get_db)):
+    # 免登录 检查Token 没有过期续期 过期了 返回要求登录
+
+    login_token = LoginFree.model_validate(user_data.data.dict())
+    user_register_result = await LoginService.login_free_services(request, query_db, login_token)
     logger.info(user_register_result.message)
 
     return ResponseUtil.success(data=user_register_result, msg=user_register_result.message)

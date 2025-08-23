@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.config import settings
 from config.enums import RedisInitKeyConfig
-from entity.vo.auth_vo import UserRegister, AddUserModel
+from entity.vo.auth_vo import UserRegister, AddUserModel, LoginFree
 from entity.vo.common_vo import  ResponseModel, LoginTokenResult
 from services.user_service import UserService
 from utils.exceptions.exception import ServiceException
@@ -86,8 +86,41 @@ class LoginService:
                 token=access_token  # 实际应替换为动态生成的token
             )
 
+            user_login_redis_key = user_login.username + ':' + access_token
             # 保存到redis
             await request.app.state.redis.set(
-                f'{user_login.username}:{access_token}', access_token, ex=timedelta(settings.jwt_expire_minutes)
+                user_login_redis_key, access_token, ex=timedelta(settings.jwt_expire_minutes)
             )
             return ResponseModel[LoginTokenResult](is_success=True, message='登录成功,token已发放', result=token_data)
+
+    @classmethod
+    async def login_free_services(cls, request: Request, query_db, login_free: LoginFree):
+
+        # 根据token获取当前用户信息
+        # 免登录 检查Token 没有过期续期 过期了 返回要求登录
+        current_user = await UserService.get_current_user(request, login_free.token, query_db)
+        access_token_expires = timedelta(minutes=settings.jwt_expire_minutes)
+        session_id = str(uuid.uuid4())
+        # 生成Token
+        access_token = await PwdUtil.create_access_token(
+            data={
+                'user_name': current_user,
+                'session_id': session_id,
+            },
+            expires_delta=access_token_expires,
+        )
+        token_data = LoginTokenResult(
+            token=access_token  # 实际应替换为动态生成的token
+        )
+        # 删除旧的token
+        delete_redis_key = current_user + ':' + login_free.token
+        await request.app.state.redis.delete(delete_redis_key)
+
+        # 保存到redis
+        user_login_redis_key = current_user + ':' + access_token
+        await request.app.state.redis.set(
+            user_login_redis_key, access_token, ex=timedelta(settings.jwt_expire_minutes)
+        )
+        return ResponseModel[LoginTokenResult](is_success=True, message='重新发放token成功', result=token_data)
+
+
